@@ -7,13 +7,13 @@
         <!-- Image Gallery -->
         <div class="gallery-section">
             <div class="gallery-main">
-                <img src="{{ get_property_image(property.id, 0) }}" alt="{{ property.title }}" id="mainImage">
+                <img src="{{ get_property_image(property.id, 0) }}" alt="{{ property.title }}" id="mainImage" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
             </div>
             <div class="gallery-thumbs">
-                <img src="{{ get_property_image(property.id, 0) }}" alt="Image 1" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
-                <img src="{{ get_property_image(property.id, 1) }}" alt="Image 2" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
-                <img src="{{ get_property_image(property.id, 2) }}" alt="Image 3" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
-                <img src="{{ get_property_image(property.id, 3) }}" alt="Image 4" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
+                <img src="{{ get_property_image(property.id, 0) }}" alt="Image 1" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
+                <img src="{{ get_property_image(property.id, 1) }}" alt="Image 2" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
+                <img src="{{ get_property_image(property.id, 2) }}" alt="Image 3" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
+                <img src="{{ get_property_image(property.id, 3) }}" alt="Image 4" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
             </div>
         </div>
 
@@ -200,7 +200,7 @@
                 {% for prop in related %}
                 <div class="property-card">
                     <div class="property-image">
-                        <img src="{{ get_property_image(prop.id) }}" alt="{{ prop.title }}">
+                        <img src="{{ get_property_image(prop.id) }}" alt="{{ prop.title }}" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
                         <span class="property-badge">{{ prop.property_type }}</span>
                     </div>
                     <div class="property-info">

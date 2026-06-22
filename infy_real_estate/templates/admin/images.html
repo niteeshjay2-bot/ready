@@ -10,7 +10,7 @@
         <div class="images-grid">
             {% for img in images.items %}
             <div class="image-card">
-                <img src="{{ get_property_image(img.property_id, loop.index0) }}" alt="Property Image">
+                <img src="{{ get_property_image(img.property_id, loop.index0) }}" alt="Property Image" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
                 <div class="image-info">
                     <span>Property #{{ img.property_id }}</span>
                     <span>{{ img.image_type }}</span>
