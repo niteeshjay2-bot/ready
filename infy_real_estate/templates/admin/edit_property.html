@@ -90,7 +90,7 @@
                 <div class="existing-images">
                     {% for img in images %}
                     <div class="img-thumb">
-                        <img src="{{ url_for('static', filename='images/properties/' + img.filename) }}" alt="Image">
+                        <img src="{{ img.image_url if img.image_url else url_for('static', filename='images/properties/' + img.filename) }}" alt="Image">
                     </div>
                     {% endfor %}
                 </div>

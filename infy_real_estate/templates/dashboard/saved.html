@@ -14,7 +14,7 @@
             <div class="property-card">
                 <div class="property-image">
                     {% if item.property.images %}
-                    <img src="{{ url_for('static', filename='images/properties/' + item.property.images[0].filename) }}" alt="{{ item.property.title }}">
+                    <img src="{{ item.property.images[0].image_url if item.property.images[0].image_url else url_for('static', filename='images/properties/' + item.property.images[0].filename) }}" alt="{{ item.property.title }}">
                     {% else %}
                     <div class="property-placeholder"><span>&#127968;</span></div>
                     {% endif %}

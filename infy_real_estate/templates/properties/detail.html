@@ -8,7 +8,7 @@
         <div class="gallery-section">
             <div class="gallery-main">
                 {% if images %}
-                <img src="{{ url_for('static', filename='images/properties/' + images[0].filename) }}" alt="{{ property.title }}" id="mainImage">
+                <img src="{{ images[0].image_url if images[0].image_url else url_for('static', filename='images/properties/' + images[0].filename) }}" alt="{{ property.title }}" id="mainImage">
                 {% else %}
                 <div class="property-placeholder large"><span>&#127968;</span></div>
                 {% endif %}
@@ -16,7 +16,7 @@
             {% if images|length > 1 %}
             <div class="gallery-thumbs">
                 {% for img in images %}
-                <img src="{{ url_for('static', filename='images/properties/' + img.filename) }}" alt="Image {{ loop.index }}" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
+                <img src="{{ img.image_url if img.image_url else url_for('static', filename='images/properties/' + img.filename) }}" alt="Image {{ loop.index }}" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
                 {% endfor %}
             </div>
             {% endif %}
@@ -206,7 +206,7 @@
                 <div class="property-card">
                     <div class="property-image">
                         {% if prop.images %}
-                        <img src="{{ url_for('static', filename='images/properties/' + prop.images[0].filename) }}" alt="{{ prop.title }}">
+                        <img src="{{ prop.images[0].image_url if prop.images[0].image_url else url_for('static', filename='images/properties/' + prop.images[0].filename) }}" alt="{{ prop.title }}">
                         {% else %}
                         <div class="property-placeholder"><span>&#127968;</span></div>
                         {% endif %}
