@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <h1 class="hero-title">Find Your Dream Home with <span class="gradient-text">AI Intelligence</span></h1>
+        <p class="hero-subtitle">India's Smartest AI Powered Real Estate Platform - Predict prices, analyze investments, and discover perfect properties.</p>
+        <div class="hero-stats">
+            <div class="stat-item"><span class="stat-number">{{ total_properties }}+</span><span class="stat-label">Properties</span></div>
+            <div class="stat-item"><span class="stat-number">{{ total_cities }}+</span><span class="stat-label">Cities</span></div>
+            <div class="stat-item"><span class="stat-number">10K+</span><span class="stat-label">Happy Users</span></div>
+            <div class="stat-item"><span class="stat-number">95%</span><span class="stat-label">AI Accuracy</span></div>
+        </div>
+        <div class="hero-actions">
+            <a href="{{ url_for('properties.listing') }}" class="btn btn-primary btn-lg">Explore Properties</a>
+            <a href="{{ url_for('ai.price_predictor') }}" class="btn btn-outline btn-lg">AI Price Predictor</a>
+        </div>
+    </div>
+</section>
+
+<!-- AI Tools Section -->
+<section class="section ai-tools-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>AI-Powered Tools</h2>
+            <p>Make smarter real estate decisions with our cutting-edge AI technology</p>
+        </div>
+        <div class="ai-tools-grid">
+            <div class="ai-tool-card">
+                <div class="tool-icon">&#128200;</div>
+                <h3>Price Predictor</h3>
+                <p>Predict property prices for 1, 3, and 5 years with 95% accuracy using ML models.</p>
+                <a href="{{ url_for('ai.price_predictor') }}" class="btn btn-sm">Try Now</a>
+            </div>
+            <div class="ai-tool-card">
+                <div class="tool-icon">&#128176;</div>
+                <h3>Investment Analyzer</h3>
+                <p>Get investment scores, ROI analysis, and risk assessment for any property.</p>
+                <a href="{{ url_for('ai.investment_analyzer') }}" class="btn btn-sm">Analyze</a>
+            </div>
+            <div class="ai-tool-card">
+                <div class="tool-icon">&#129302;</div>
+                <h3>INFY AI Chat</h3>
+                <p>Ask anything about real estate - loans, registration, investment tips, and more.</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('ai.chatbot') }}" class="btn btn-sm">Chat Now</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-sm">Login to Chat</a>
+                {% endif %}
+            </div>
+            <div class="ai-tool-card">
+                <div class="tool-icon">&#128737;</div>
+                <h3>Trust Score</h3>
+                <p>AI-powered scam detection. Verify listings before investing your money.</p>
+                <a href="{{ url_for('properties.listing') }}" class="btn btn-sm">View Properties</a>
+            </div>
+            <div class="ai-tool-card">
+                <div class="tool-icon">&#127969;</div>
+                <h3>Smart Search</h3>
+                <p>Find properties matching 20+ criteria including amenities and location preferences.</p>
+                <a href="{{ url_for('properties.smart_search') }}" class="btn btn-sm">Search</a>
+            </div>
+            <div class="ai-tool-card">
+                <div class="tool-icon">&#128202;</div>
+                <h3>Growth Predictor</h3>
+                <p>Know future development projects and their impact on property prices.</p>
+                <a href="{{ url_for('ai.investment_analyzer') }}" class="btn btn-sm">Predict</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Properties -->
+<section class="section featured-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Featured Properties</h2>
+            <p>Handpicked premium properties from top locations</p>
+        </div>
+        <div class="property-grid">
+            {% for property in featured_properties[:8] %}
+            <div class="property-card">
+                <div class="property-image">
+                    {% if property.images %}
+                    <img src="{{ url_for('static', filename='images/properties/' + property.images[0].filename) }}" alt="{{ property.title }}">
+                    {% else %}
+                    <div class="property-placeholder">
+                        <span>&#127968;</span>
+                    </div>
+                    {% endif %}
+                    <span class="property-badge">{{ property.property_type }}</span>
+                    {% if property.is_featured %}<span class="property-badge featured-badge">Featured</span>{% endif %}
+                </div>
+                <div class="property-info">
+                    <h3 class="property-title">{{ property.title[:45] }}{% if property.title|length > 45 %}...{% endif %}</h3>
+                    <p class="property-location">&#128205; {{ property.locality or '' }}{% if property.city %}, {{ property.city.name }}{% endif %}</p>
+                    <div class="property-features">
+                        <span>&#128719; {{ property.bedrooms }} BHK</span>
+                        <span>&#128704; {{ property.bathrooms }} Bath</span>
+                        <span>&#128207; {{ property.area_sqft }} sqft</span>
+                    </div>
+                    <div class="property-footer">
+                        <span class="property-price">{{ format_price(property.price) }}</span>
+                        <a href="{{ url_for('properties.detail', property_id=property.id) }}" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="section-cta">
+            <a href="{{ url_for('properties.listing') }}" class="btn btn-primary btn-lg">View All Properties</a>
+        </div>
+    </div>
+</section>
+
+<!-- Top Cities -->
+<section class="section cities-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Top Cities</h2>
+            <p>Explore properties in India's fastest growing real estate markets</p>
+        </div>
+        <div class="cities-grid">
+            {% for city in top_cities %}
+            <a href="{{ url_for('properties.listing', city_id=city.id) }}" class="city-card">
+                <div class="city-icon">&#127961;</div>
+                <h3>{{ city.name }}</h3>
+                <p>{{ city.properties|length }} Properties</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="section how-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>How INFY Works</h2>
+            <p>Your AI-powered property journey in 4 simple steps</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Search</h3>
+                <p>Use Smart Search with 20+ filters to find properties matching your exact requirements.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>AI Analysis</h3>
+                <p>Get AI-powered price predictions, investment scores, and trust verification.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Compare</h3>
+                <p>Compare up to 5 properties side-by-side with ROI and location scores.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>Invest Smart</h3>
+                <p>Make data-driven decisions with confidence using our AI recommendations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section testimonials-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>What Our Users Say</h2>
+            <p>Trusted by thousands of property buyers across India</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-rating">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+                <p>"INFY's AI price predictor saved me 15 lakhs! The prediction was spot-on and helped me negotiate better."</p>
+                <div class="testimonial-author">- Rajesh Kumar, Mumbai</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+                <p>"The investment analyzer helped me choose between 3 properties. Best decision I ever made - 18% returns!"</p>
+                <div class="testimonial-author">- Priya Sharma, Bengaluru</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-rating">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+                <p>"Trust Score feature detected a suspicious listing that could have cost me lakhs. Truly lifesaver!"</p>
+                <div class="testimonial-author">- Amit Patel, Hyderabad</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Find Your Dream Home?</h2>
+            <p>Join 10,000+ smart property buyers who trust INFY Real Estate</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Get Started Free</a>
+                <a href="{{ url_for('ai.price_predictor') }}" class="btn btn-outline btn-lg">Try AI Predictor</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function formatPrice(price) {
+    if (price >= 10000000) return '\u20b9' + (price/10000000).toFixed(2) + ' Cr';
+    if (price >= 100000) return '\u20b9' + (price/100000).toFixed(2) + ' L';
+    return '\u20b9' + price.toLocaleString('en-IN');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Edit Property{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Edit: {{ property.title[:40] }}</h1>
+        </div>
+        <div class="form-card">
+            <form method="POST" enctype="multipart/form-data" class="property-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" value="{{ property.title }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="4">{{ property.description }}</textarea>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="property_type">
+                            {% for ptype in property_types %}
+                            <option value="{{ ptype }}" {% if property.property_type == ptype %}selected{% endif %}>{{ ptype }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" name="price" value="{{ property.price|int }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Area (sq ft)</label>
+                        <input type="number" name="area_sqft" value="{{ property.area_sqft|int }}">
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <input type="number" name="bedrooms" value="{{ property.bedrooms }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <input type="number" name="bathrooms" value="{{ property.bathrooms }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" name="property_age" value="{{ property.property_age }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Locality</label>
+                    <input type="text" name="locality" value="{{ property.locality }}">
+                </div>
+                <div class="form-group">
+                    <label>Furnished</label>
+                    <select name="furnished">
+                        <option value="unfurnished" {% if property.furnished == 'unfurnished' %}selected{% endif %}>Unfurnished</option>
+                        <option value="semi-furnished" {% if property.furnished == 'semi-furnished' %}selected{% endif %}>Semi-Furnished</option>
+                        <option value="furnished" {% if property.furnished == 'furnished' %}selected{% endif %}>Furnished</option>
+                    </select>
+                </div>
+                <h3>Amenities</h3>
+                <div class="amenities-check-grid">
+                    <label class="checkbox-label"><input type="checkbox" name="car_parking" {% if property.car_parking %}checked{% endif %}> Car Parking</label>
+                    <label class="checkbox-label"><input type="checkbox" name="swimming_pool" {% if property.swimming_pool %}checked{% endif %}> Swimming Pool</label>
+                    <label class="checkbox-label"><input type="checkbox" name="power_backup" {% if property.power_backup %}checked{% endif %}> Power Backup</label>
+                    <label class="checkbox-label"><input type="checkbox" name="lift" {% if property.lift %}checked{% endif %}> Lift</label>
+                    <label class="checkbox-label"><input type="checkbox" name="gym" {% if property.gym %}checked{% endif %}> Gym</label>
+                    <label class="checkbox-label"><input type="checkbox" name="club_house" {% if property.club_house %}checked{% endif %}> Club House</label>
+                    <label class="checkbox-label"><input type="checkbox" name="garden" {% if property.garden %}checked{% endif %}> Garden</label>
+                    <label class="checkbox-label"><input type="checkbox" name="security" {% if property.security %}checked{% endif %}> Security</label>
+                    <label class="checkbox-label"><input type="checkbox" name="children_play_area" {% if property.children_play_area %}checked{% endif %}> Play Area</label>
+                    <label class="checkbox-label"><input type="checkbox" name="water_facility" {% if property.water_facility %}checked{% endif %}> Water</label>
+                    <label class="checkbox-label"><input type="checkbox" name="pet_friendly" {% if property.pet_friendly %}checked{% endif %}> Pet Friendly</label>
+                    <label class="checkbox-label"><input type="checkbox" name="near_school" {% if property.near_school %}checked{% endif %}> Near School</label>
+                    <label class="checkbox-label"><input type="checkbox" name="near_hospital" {% if property.near_hospital %}checked{% endif %}> Near Hospital</label>
+                    <label class="checkbox-label"><input type="checkbox" name="metro_connectivity" {% if property.metro_connectivity %}checked{% endif %}> Metro</label>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label"><input type="checkbox" name="is_featured" {% if property.is_featured %}checked{% endif %}> Featured</label>
+                </div>
+                <h3>Add More Images</h3>
+                <div class="form-group">
+                    <input type="file" name="images" multiple accept="image/*">
+                </div>
+                {% if images %}
+                <div class="existing-images">
+                    {% for img in images %}
+                    <div class="img-thumb">
+                        <img src="{{ url_for('static', filename='images/properties/' + img.filename) }}" alt="Image">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary btn-lg">Update Property</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

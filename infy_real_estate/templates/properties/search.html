@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Smart Search{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>&#128269; Smart Property Search</h1>
+            <p>Tell us exactly what you need - our AI will find the perfect match</p>
+        </div>
+        <div class="search-form-card">
+            <form method="GET" action="{{ url_for('properties.listing') }}" class="smart-search-form">
+                <div class="search-grid">
+                    <div class="form-group">
+                        <label>State</label>
+                        <select name="state_id">
+                            <option value="">Select State</option>
+                            {% for state in states %}
+                            <option value="{{ state.id }}">{{ state.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Property Type</label>
+                        <select name="property_type">
+                            <option value="">Any Type</option>
+                            {% for ptype in property_types %}
+                            <option value="{{ ptype }}">{{ ptype }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Budget</label>
+                        <select name="max_price">
+                            <option value="">No Limit</option>
+                            <option value="2500000">25 Lakhs</option>
+                            <option value="5000000">50 Lakhs</option>
+                            <option value="7500000">75 Lakhs</option>
+                            <option value="10000000">1 Crore</option>
+                            <option value="20000000">2 Crore</option>
+                            <option value="50000000">5 Crore</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <select name="bedrooms">
+                            <option value="">Any</option>
+                            <option value="1">1 BHK</option>
+                            <option value="2">2 BHK</option>
+                            <option value="3">3 BHK</option>
+                            <option value="4">4 BHK</option>
+                            <option value="5">5+ BHK</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <select name="bathrooms">
+                            <option value="">Any</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Furnished</label>
+                        <select name="furnished">
+                            <option value="">Any</option>
+                            <option value="furnished">Furnished</option>
+                            <option value="semi-furnished">Semi-Furnished</option>
+                            <option value="unfurnished">Unfurnished</option>
+                        </select>
+                    </div>
+                </div>
+                <h3 class="search-amenities-title">Amenities & Preferences</h3>
+                <div class="search-amenities-grid">
+                    <label class="checkbox-card"><input type="checkbox" name="car_parking"><span>&#128663; Car Parking</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="swimming_pool"><span>&#127946; Swimming Pool</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="power_backup"><span>&#9889; Power Backup</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="lift"><span>&#128316; Lift</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="gym"><span>&#127947; Gym</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="club_house"><span>&#127963; Club House</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="garden"><span>&#127795; Garden</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="security"><span>&#128737; Security</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="children_play_area"><span>&#127928; Play Area</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="water_facility"><span>&#128167; Water 24/7</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="near_school"><span>&#127979; Near School</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="near_hospital"><span>&#127973; Near Hospital</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="metro_connectivity"><span>&#128646; Metro</span></label>
+                    <label class="checkbox-card"><input type="checkbox" name="pet_friendly"><span>&#128054; Pet Friendly</span></label>
+                </div>
+                <div class="search-submit">
+                    <button type="submit" class="btn btn-primary btn-lg">&#128269; Find Properties</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

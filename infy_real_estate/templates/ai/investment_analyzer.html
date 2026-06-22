@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}AI Investment Analyzer{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>&#128176; AI Investment Analyzer</h1>
+            <p>Comprehensive investment analysis with ROI, growth prediction, and neighborhood intelligence</p>
+        </div>
+        <div class="predictor-grid">
+            <div class="predictor-form-card">
+                <h3>Property Details</h3>
+                <form method="POST" class="predictor-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label>City</label>
+                        <select name="city" required>
+                            <option value="">Select City</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Bengaluru">Bengaluru</option>
+                            <option value="Hyderabad">Hyderabad</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Pune">Pune</option>
+                            <option value="Kolkata">Kolkata</option>
+                            <option value="Gurgaon">Gurgaon</option>
+                            <option value="Noida">Noida</option>
+                            <option value="Ahmedabad">Ahmedabad</option>
+                            <option value="Kochi">Kochi</option>
+                            <option value="Jaipur">Jaipur</option>
+                            <option value="Indore">Indore</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Property Type</label>
+                        <select name="property_type" required>
+                            {% for ptype in property_types %}
+                            <option value="{{ ptype }}">{{ ptype }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Property Price (INR)</label>
+                        <input type="number" name="price" min="100000" value="5000000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Area (sq ft)</label>
+                        <input type="number" name="area_sqft" min="100" value="1200" required>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Bedrooms</label>
+                            <input type="number" name="bedrooms" min="1" max="10" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Property Age</label>
+                            <input type="number" name="property_age" min="0" max="50" value="3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Amenities Count (0-14)</label>
+                        <input type="number" name="amenities" min="0" max="14" value="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Near Metro Station?</label>
+                        <select name="near_metro">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">&#128176; Analyze Investment</button>
+                </form>
+            </div>
+
+            <div class="predictor-result-card">
+                {% if result %}
+                <!-- Investment Score -->
+                <div class="analysis-section">
+                    <h3>&#127775; Investment Score</h3>
+                    <div class="score-display">
+                        <div class="big-score">{{ result.investment.investment_score|round|int }}<span>/100</span></div>
+                        <div class="score-meta">
+                            <span class="risk-badge risk-{{ result.investment.risk_level|lower }}">Risk: {{ result.investment.risk_level }}</span>
+                            <span class="roi-badge">ROI: {{ result.investment.roi_potential }}</span>
+                        </div>
+                    </div>
+                    <p class="recommendation">{{ result.investment.recommendation }}</p>
+                    <div class="score-breakdown">
+                        <h4>Score Breakdown</h4>
+                        {% for key, val in result.investment.breakdown.items() %}
+                        <div class="breakdown-item">
+                            <span>{{ key|title }}</span>
+                            <div class="breakdown-bar"><div style="width:{{ val }}%"></div></div>
+                            <span>{{ val|round|int }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- ROI Analysis -->
+                <div class="analysis-section">
+                    <h3>&#128176; ROI Analysis</h3>
+                    <div class="roi-grid">
+                        <div class="roi-card"><span>Monthly Rent</span><strong>{{ format_price(result.roi.monthly_rent) }}</strong></div>
+                        <div class="roi-card"><span>Rental Yield</span><strong>{{ result.roi.rental_yield }}%</strong></div>
+                        <div class="roi-card"><span>5Y Capital Gain</span><strong class="text-green">{{ format_price(result.roi.capital_gain) }}</strong></div>
+                        <div class="roi-card"><span>Total 5Y ROI</span><strong class="text-green">{{ result.roi.total_roi }}%</strong></div>
+                    </div>
+                </div>
+
+                <!-- Growth Potential -->
+                <div class="analysis-section">
+                    <h3>&#128640; Future Growth - {{ result.city }}</h3>
+                    <p class="growth-level growth-{{ result.growth.growth_potential|lower|replace(' ', '-') }}">
+                        {{ result.growth.growth_potential }} Growth Potential
+                    </p>
+                    <p>{{ result.growth.price_impact }}</p>
+                    {% if result.growth.upcoming_projects %}
+                    <h4>Upcoming Projects:</h4>
+                    <ul class="projects-list">
+                        {% for project in result.growth.upcoming_projects %}
+                        <li><strong>{{ project.name }}</strong> ({{ project.type }}) - Impact: {{ project.impact }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Neighborhood -->
+                <div class="analysis-section">
+                    <h3>&#127961; Neighborhood Intelligence</h3>
+                    <div class="neighborhood-scores">
+                        <div class="nb-item"><span>Water</span><div class="nb-bar"><div style="width:{{ result.neighborhood.water_availability }}%"></div></div><span>{{ result.neighborhood.water_availability }}%</span></div>
+                        <div class="nb-item"><span>Safety</span><div class="nb-bar"><div style="width:{{ result.neighborhood.safety_score }}%"></div></div><span>{{ result.neighborhood.safety_score }}%</span></div>
+                        <div class="nb-item"><span>Schools</span><div class="nb-bar"><div style="width:{{ result.neighborhood.school_rating }}%"></div></div><span>{{ result.neighborhood.school_rating }}%</span></div>
+                        <div class="nb-item"><span>Hospitals</span><div class="nb-bar"><div style="width:{{ result.neighborhood.hospital_rating }}%"></div></div><span>{{ result.neighborhood.hospital_rating }}%</span></div>
+                        <div class="nb-item"><span>Traffic</span><div class="nb-bar"><div style="width:{{ result.neighborhood.traffic_score }}%"></div></div><span>{{ result.neighborhood.traffic_score }}%</span></div>
+                        <div class="nb-item"><span>Pollution</span><div class="nb-bar"><div style="width:{{ result.neighborhood.pollution_score }}%"></div></div><span>{{ result.neighborhood.pollution_score }}%</span></div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="result-placeholder">
+                    <span class="placeholder-icon">&#128176;</span>
+                    <h3>Investment Analysis</h3>
+                    <p>Get comprehensive AI analysis including:</p>
+                    <ul class="placeholder-features">
+                        <li>&#10003; Investment Score (0-100)</li>
+                        <li>&#10003; ROI & Rental Yield</li>
+                        <li>&#10003; Future Growth Prediction</li>
+                        <li>&#10003; Neighborhood Intelligence</li>
+                        <li>&#10003; Risk Assessment</li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

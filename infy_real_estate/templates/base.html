@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}INFY Real Estate{% endblock %} - India's Smartest AI Powered Real Estate Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('main.index') }}" class="nav-brand">
+                <span class="brand-icon">&#9962;</span>
+                <span class="brand-text">INFY <span class="brand-highlight">Real Estate</span></span>
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="{{ url_for('main.index') }}" class="nav-link">Home</a></li>
+                <li><a href="{{ url_for('properties.listing') }}" class="nav-link">Properties</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link">AI Tools &#9662;</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('ai.price_predictor') }}">Price Predictor</a></li>
+                        <li><a href="{{ url_for('ai.investment_analyzer') }}">Investment Analyzer</a></li>
+                        {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('ai.chatbot') }}">INFY AI Chat</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                <li><a href="{{ url_for('properties.smart_search') }}" class="nav-link">Smart Search</a></li>
+
+                {% if current_user.is_authenticated %}
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link">{{ current_user.full_name[:15] }} &#9662;</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('dashboard.saved_properties') }}">Saved Properties</a></li>
+                        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+                        {% if current_user.is_admin() %}
+                        <li><a href="{{ url_for('admin.dashboard') }}">Admin Panel</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><a href="{{ url_for('auth.login') }}" class="nav-link btn-nav">Login</a></li>
+                <li><a href="{{ url_for('auth.register') }}" class="nav-link btn-nav-primary">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+            <span>{{ message }}</span>
+            <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3 class="footer-brand">&#9962; INFY Real Estate</h3>
+                    <p>India's Smartest AI Powered Real Estate Platform. Find your dream property with AI-powered insights.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{{ url_for('properties.listing') }}">Properties</a></li>
+                        <li><a href="{{ url_for('ai.price_predictor') }}">Price Predictor</a></li>
+                        <li><a href="{{ url_for('ai.investment_analyzer') }}">Investment Analyzer</a></li>
+                        <li><a href="{{ url_for('properties.smart_search') }}">Smart Search</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Top Cities</h4>
+                    <ul>
+                        <li><a href="#">Mumbai</a></li>
+                        <li><a href="#">Bengaluru</a></li>
+                        <li><a href="#">Hyderabad</a></li>
+                        <li><a href="#">Delhi NCR</a></li>
+                        <li><a href="#">Pune</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li>Email: info@infyrealestate.com</li>
+                        <li>Phone: +91 98765 43210</li>
+                        <li>Mumbai, Maharashtra, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 INFY Real Estate. All rights reserved. | India's Smartest AI Powered Real Estate Platform</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // Mobile nav toggle
+    document.getElementById('navToggle').addEventListener('click', function() {
+        document.getElementById('navMenu').classList.toggle('active');
+        this.classList.toggle('active');
+    });
+
+    // Auto-hide flash messages
+    setTimeout(function() {
+        var flashes = document.querySelectorAll('.flash-message');
+        flashes.forEach(function(f) { f.style.opacity = '0'; setTimeout(function(){ f.remove(); }, 300); });
+    }, 5000);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

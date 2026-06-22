@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}INFY AI Chat{% endblock %}
+
+{% block content %}
+<section class="chatbot-section">
+    <div class="chat-layout">
+        <!-- Sidebar -->
+        <div class="chat-sidebar" id="chatSidebar">
+            <div class="chat-sidebar-header">
+                <h3>&#129302; INFY AI</h3>
+                <button class="btn btn-sm btn-primary" id="newChatBtn">+ New Chat</button>
+            </div>
+            <div class="chat-sessions" id="chatSessions">
+                {% for session in sessions %}
+                <div class="chat-session-item" data-id="{{ session.id }}">
+                    <span class="session-title">{{ session.title[:30] }}</span>
+                    <span class="session-date">{{ session.created_at.strftime('%d %b') }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <button class="chat-toggle-sidebar" id="toggleSidebar">&#9776;</button>
+                <h3 id="chatTitle">INFY AI - Your Real Estate Assistant</h3>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-welcome">
+                    <div class="welcome-icon">&#129302;</div>
+                    <h2>Welcome to INFY AI</h2>
+                    <p>I'm your intelligent real estate assistant. Ask me anything about:</p>
+                    <div class="welcome-suggestions">
+                        <button class="suggestion-chip" onclick="sendSuggestion('Show me villas in Hyderabad under 1 crore')">Villas in Hyderabad under 1 Cr</button>
+                        <button class="suggestion-chip" onclick="sendSuggestion('What are the best areas to invest in Bengaluru?')">Best investment areas in Bengaluru</button>
+                        <button class="suggestion-chip" onclick="sendSuggestion('Calculate EMI for 50 lakhs home loan')">Calculate EMI for 50 Lakhs</button>
+                        <button class="suggestion-chip" onclick="sendSuggestion('Explain the property registration process')">Property registration process</button>
+                        <button class="suggestion-chip" onclick="sendSuggestion('What tax benefits can I get on home loan?')">Home loan tax benefits</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <form id="chatForm" class="chat-form">
+                    <input type="text" id="chatInput" placeholder="Ask INFY AI anything about real estate..." autocomplete="off">
+                    <button type="submit" class="chat-send-btn">&#10148;</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var currentSessionId = null;
+var csrfToken = '{{ csrf_token() }}';
+
+document.getElementById('chatForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var input = document.getElementById('chatInput');
+    var message = input.value.trim();
+    if (!message) return;
+    sendMessage(message);
+    input.value = '';
+});
+
+function sendSuggestion(text) {
+    sendMessage(text);
+}
+
+function sendMessage(message) {
+    var messagesDiv = document.getElementById('chatMessages');
+    // Clear welcome
+    var welcome = messagesDiv.querySelector('.chat-welcome');
+    if (welcome) welcome.remove();
+
+    // Add user message
+    messagesDiv.innerHTML += '<div class="chat-msg user-msg"><div class="msg-content">' + escapeHtml(message) + '</div></div>';
+
+    // Add typing indicator
+    messagesDiv.innerHTML += '<div class="chat-msg ai-msg typing-msg" id="typingIndicator"><div class="msg-content"><span class="typing-dots"><span>.</span><span>.</span><span>.</span></span></div></div>';
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // Send to server
+    fetch('/ai/chatbot/message', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
+        body: JSON.stringify({session_id: currentSessionId, message: message})
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        // Remove typing indicator
+        var typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+
+        currentSessionId = data.session_id;
+        document.getElementById('chatTitle').textContent = data.session_title || 'INFY AI Chat';
+
+        // Add AI response
+        var formatted = formatResponse(data.response);
+        messagesDiv.innerHTML += '<div class="chat-msg ai-msg"><div class="msg-avatar">&#129302;</div><div class="msg-content">' + formatted + '</div></div>';
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    })
+    .catch(function(err) {
+        var typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+        messagesDiv.innerHTML += '<div class="chat-msg ai-msg"><div class="msg-content">Sorry, something went wrong. Please try again.</div></div>';
+    });
+}
+
+function formatResponse(text) {
+    // Convert markdown-like formatting
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\n/g, '<br>');
+    text = text.replace(/- (.*?)(<br>|$)/g, '<li>$1</li>');
+    return text;
+}
+
+function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// New Chat
+document.getElementById('newChatBtn').addEventListener('click', function() {
+    currentSessionId = null;
+    document.getElementById('chatMessages').innerHTML = '<div class="chat-welcome"><div class="welcome-icon">&#129302;</div><h2>New Chat Started</h2><p>Ask me anything about real estate!</p></div>';
+    document.getElementById('chatTitle').textContent = 'INFY AI - New Chat';
+});
+
+// Load chat history
+document.querySelectorAll('.chat-session-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+        var sessionId = this.dataset.id;
+        currentSessionId = sessionId;
+        fetch('/ai/chatbot/history/' + sessionId)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML = '';
+            document.getElementById('chatTitle').textContent = data.title;
+            data.messages.forEach(function(msg) {
+                if (msg.role === 'user') {
+                    messagesDiv.innerHTML += '<div class="chat-msg user-msg"><div class="msg-content">' + escapeHtml(msg.content) + '</div></div>';
+                } else {
+                    messagesDiv.innerHTML += '<div class="chat-msg ai-msg"><div class="msg-avatar">&#129302;</div><div class="msg-content">' + formatResponse(msg.content) + '</div></div>';
+                }
+            });
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+    });
+});
+
+// Toggle sidebar on mobile
+document.getElementById('toggleSidebar').addEventListener('click', function() {
+    document.getElementById('chatSidebar').classList.toggle('active');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Prediction History{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>&#128200; Prediction History</h1>
+            <p>Your AI price prediction records</p>
+        </div>
+        {% if predictions %}
+        <div class="predictions-list">
+            {% for pred in predictions %}
+            <div class="prediction-card">
+                <div class="pred-header">
+                    <h3>{{ pred.city }} - {{ pred.property_type }}</h3>
+                    <span class="pred-date">{{ pred.created_at.strftime('%d %b %Y') }}</span>
+                </div>
+                <div class="pred-details">
+                    <div class="pred-item"><span>Area</span><strong>{{ pred.area_sqft }} sqft</strong></div>
+                    <div class="pred-item"><span>Bedrooms</span><strong>{{ pred.bedrooms }} BHK</strong></div>
+                    <div class="pred-item"><span>Current</span><strong>{{ format_price(pred.current_price) }}</strong></div>
+                    <div class="pred-item"><span>1 Year</span><strong class="text-green">{{ format_price(pred.price_1year) }}</strong></div>
+                    <div class="pred-item"><span>3 Years</span><strong class="text-green">{{ format_price(pred.price_3year) }}</strong></div>
+                    <div class="pred-item"><span>5 Years</span><strong class="text-green">{{ format_price(pred.price_5year) }}</strong></div>
+                    <div class="pred-item"><span>Confidence</span><strong>{{ pred.confidence }}%</strong></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">&#128200;</span>
+            <h3>No predictions yet</h3>
+            <p>Use our AI Price Predictor to forecast property prices!</p>
+            <a href="{{ url_for('ai.price_predictor') }}" class="btn btn-primary">Make a Prediction</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

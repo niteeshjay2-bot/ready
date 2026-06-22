@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% block title %}{{ property.title }}{% endblock %}
+
+{% block content %}
+<section class="section property-detail-section">
+    <div class="container">
+        <!-- Image Gallery -->
+        <div class="gallery-section">
+            <div class="gallery-main">
+                {% if images %}
+                <img src="{{ url_for('static', filename='images/properties/' + images[0].filename) }}" alt="{{ property.title }}" id="mainImage">
+                {% else %}
+                <div class="property-placeholder large"><span>&#127968;</span></div>
+                {% endif %}
+            </div>
+            {% if images|length > 1 %}
+            <div class="gallery-thumbs">
+                {% for img in images %}
+                <img src="{{ url_for('static', filename='images/properties/' + img.filename) }}" alt="Image {{ loop.index }}" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Property Info -->
+        <div class="detail-grid">
+            <div class="detail-main">
+                <div class="detail-header">
+                    <div>
+                        <h1>{{ property.title }}</h1>
+                        <p class="detail-location">&#128205; {{ property.locality or '' }}, {{ city_name }}</p>
+                    </div>
+                    <div class="detail-price">
+                        <span class="price-amount">{{ format_price(property.price) }}</span>
+                        <span class="price-sqft">{{ format_price(property.price / property.area_sqft) }}/sqft</span>
+                    </div>
+                </div>
+
+                <!-- Key Features -->
+                <div class="features-card">
+                    <div class="features-grid">
+                        <div class="feature-item"><span class="feature-icon">&#128719;</span><span>{{ property.bedrooms }} Bedrooms</span></div>
+                        <div class="feature-item"><span class="feature-icon">&#128704;</span><span>{{ property.bathrooms }} Bathrooms</span></div>
+                        <div class="feature-item"><span class="feature-icon">&#128207;</span><span>{{ property.area_sqft }} sq ft</span></div>
+                        <div class="feature-item"><span class="feature-icon">&#127970;</span><span>Floor {{ property.floor_number }}/{{ property.total_floors }}</span></div>
+                        <div class="feature-item"><span class="feature-icon">&#128197;</span><span>{{ property.property_age }} yrs old</span></div>
+                        <div class="feature-item"><span class="feature-icon">&#127968;</span><span>{{ property.property_type }}</span></div>
+                        <div class="feature-item"><span class="feature-icon">&#128715;</span><span>{{ property.furnished|title }}</span></div>
+                        <div class="feature-item"><span class="feature-icon">&#129517;</span><span>{{ property.facing or 'N/A' }} Facing</span></div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="info-card">
+                    <h3>Description</h3>
+                    <p>{{ property.description or 'No description available.' }}</p>
+                </div>
+
+                <!-- Amenities -->
+                <div class="info-card">
+                    <h3>Amenities</h3>
+                    <div class="amenities-grid">
+                        {% if property.car_parking %}<span class="amenity-tag active">&#128663; Car Parking</span>{% endif %}
+                        {% if property.swimming_pool %}<span class="amenity-tag active">&#127946; Swimming Pool</span>{% endif %}
+                        {% if property.power_backup %}<span class="amenity-tag active">&#9889; Power Backup</span>{% endif %}
+                        {% if property.lift %}<span class="amenity-tag active">&#128316; Lift</span>{% endif %}
+                        {% if property.gym %}<span class="amenity-tag active">&#127947; Gym</span>{% endif %}
+                        {% if property.club_house %}<span class="amenity-tag active">&#127963; Club House</span>{% endif %}
+                        {% if property.garden %}<span class="amenity-tag active">&#127795; Garden</span>{% endif %}
+                        {% if property.security %}<span class="amenity-tag active">&#128737; Security</span>{% endif %}
+                        {% if property.children_play_area %}<span class="amenity-tag active">&#127928; Play Area</span>{% endif %}
+                        {% if property.water_facility %}<span class="amenity-tag active">&#128167; Water 24/7</span>{% endif %}
+                        {% if property.pet_friendly %}<span class="amenity-tag active">&#128054; Pet Friendly</span>{% endif %}
+                        {% if property.near_school %}<span class="amenity-tag active">&#127979; Near School</span>{% endif %}
+                        {% if property.near_hospital %}<span class="amenity-tag active">&#127973; Near Hospital</span>{% endif %}
+                        {% if property.metro_connectivity %}<span class="amenity-tag active">&#128646; Metro</span>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Owner/Builder Info -->
+                <div class="info-card">
+                    <h3>Contact Information</h3>
+                    <div class="contact-grid">
+                        {% if property.builder_name %}<p><strong>Builder:</strong> {{ property.builder_name }}</p>{% endif %}
+                        {% if property.owner_name %}<p><strong>Owner:</strong> {{ property.owner_name }}</p>{% endif %}
+                        {% if property.owner_phone %}<p><strong>Phone:</strong> {{ property.owner_phone }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Insights Sidebar -->
+            <div class="detail-sidebar">
+                <!-- Save Property -->
+                {% if current_user.is_authenticated %}
+                <form method="POST" action="{{ url_for('properties.save_property', property_id=property.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-full {% if is_saved %}btn-outline{% else %}btn-primary{% endif %}">
+                        {% if is_saved %}&#10084; Saved{% else %}&#9825; Save Property{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+
+                <!-- Investment Score -->
+                <div class="score-card">
+                    <h4>&#128176; Investment Score</h4>
+                    <div class="score-circle" style="--score: {{ investment.investment_score }}">
+                        <span class="score-value">{{ investment.investment_score|round|int }}</span>
+                        <span class="score-label">/100</span>
+                    </div>
+                    <p class="score-risk">Risk: <strong>{{ investment.risk_level }}</strong></p>
+                    <p class="score-roi">ROI: <strong>{{ investment.roi_potential }}</strong></p>
+                    <p class="score-rec">{{ investment.recommendation }}</p>
+                </div>
+
+                <!-- Trust Score -->
+                <div class="score-card trust-card">
+                    <h4>&#128737; Trust Score</h4>
+                    <div class="trust-score">
+                        <span class="trust-value" style="color: {{ trust.badge_color }}">{{ trust.trust_score|round|int }}%</span>
+                        <span class="trust-level">{{ trust.trust_level }}</span>
+                    </div>
+                    {% if trust.verified_owner %}<span class="verified-badge">&#9989; Verified Owner</span>{% endif %}
+                    {% if trust.verified_property %}<span class="verified-badge">&#9989; Verified Property</span>{% endif %}
+                </div>
+
+                <!-- Price Prediction -->
+                <div class="score-card prediction-card">
+                    <h4>&#128200; AI Price Prediction</h4>
+                    <div class="prediction-list">
+                        <div class="prediction-item">
+                            <span>Current Value</span>
+                            <strong>{{ format_price(prediction.current_price) }}</strong>
+                        </div>
+                        <div class="prediction-item">
+                            <span>1 Year</span>
+                            <strong class="text-green">{{ format_price(prediction.price_1year) }}</strong>
+                        </div>
+                        <div class="prediction-item">
+                            <span>3 Years</span>
+                            <strong class="text-green">{{ format_price(prediction.price_3year) }}</strong>
+                        </div>
+                        <div class="prediction-item">
+                            <span>5 Years</span>
+                            <strong class="text-green">{{ format_price(prediction.price_5year) }}</strong>
+                        </div>
+                    </div>
+                    <p class="confidence">Confidence: {{ prediction.confidence }}%</p>
+                </div>
+
+                <!-- Growth Potential -->
+                <div class="score-card">
+                    <h4>&#128640; Growth Potential</h4>
+                    <p class="growth-level growth-{{ growth.growth_potential|lower|replace(' ', '-') }}">{{ growth.growth_potential }}</p>
+                    <p>{{ growth.price_impact }}</p>
+                    {% if growth.upcoming_projects %}
+                    <ul class="growth-projects">
+                        {% for project in growth.upcoming_projects[:3] %}
+                        <li>{{ project.name }} ({{ project.type }})</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <!-- ROI Analysis -->
+                <div class="score-card">
+                    <h4>&#128176; ROI Analysis</h4>
+                    <div class="roi-list">
+                        <div class="roi-item"><span>Monthly Rent</span><strong>{{ format_price(roi.monthly_rent) }}</strong></div>
+                        <div class="roi-item"><span>Rental Yield</span><strong>{{ roi.rental_yield }}%</strong></div>
+                        <div class="roi-item"><span>5Y Capital Gain</span><strong class="text-green">{{ format_price(roi.capital_gain) }}</strong></div>
+                        <div class="roi-item"><span>Total ROI (5Y)</span><strong class="text-green">{{ roi.total_roi }}%</strong></div>
+                    </div>
+                </div>
+
+                <!-- Negotiation -->
+                <div class="score-card">
+                    <h4>&#129309; Negotiation Advice</h4>
+                    <div class="negotiation-list">
+                        <div class="neg-item"><span>Seller Price</span><strong>{{ format_price(negotiation.seller_price) }}</strong></div>
+                        <div class="neg-item"><span>Fair Market</span><strong>{{ format_price(negotiation.fair_market_price) }}</strong></div>
+                        <div class="neg-item"><span>Suggested Offer</span><strong class="text-green">{{ format_price(negotiation.suggested_offer) }}</strong></div>
+                        <div class="neg-item"><span>Potential Savings</span><strong class="text-green">{{ format_price(negotiation.potential_savings) }}</strong></div>
+                    </div>
+                </div>
+
+                <!-- Neighborhood -->
+                <div class="score-card">
+                    <h4>&#127961; Neighborhood Intelligence</h4>
+                    <div class="neighborhood-scores">
+                        <div class="nb-item"><span>Water</span><div class="nb-bar"><div style="width:{{ neighborhood.water_availability }}%"></div></div><span>{{ neighborhood.water_availability }}%</span></div>
+                        <div class="nb-item"><span>Safety</span><div class="nb-bar"><div style="width:{{ neighborhood.safety_score }}%"></div></div><span>{{ neighborhood.safety_score }}%</span></div>
+                        <div class="nb-item"><span>Schools</span><div class="nb-bar"><div style="width:{{ neighborhood.school_rating }}%"></div></div><span>{{ neighborhood.school_rating }}%</span></div>
+                        <div class="nb-item"><span>Hospitals</span><div class="nb-bar"><div style="width:{{ neighborhood.hospital_rating }}%"></div></div><span>{{ neighborhood.hospital_rating }}%</span></div>
+                        <div class="nb-item"><span>Traffic</span><div class="nb-bar"><div style="width:{{ neighborhood.traffic_score }}%"></div></div><span>{{ neighborhood.traffic_score }}%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Properties -->
+        {% if related %}
+        <div class="related-section">
+            <h2>Similar Properties</h2>
+            <div class="property-grid">
+                {% for prop in related %}
+                <div class="property-card">
+                    <div class="property-image">
+                        {% if prop.images %}
+                        <img src="{{ url_for('static', filename='images/properties/' + prop.images[0].filename) }}" alt="{{ prop.title }}">
+                        {% else %}
+                        <div class="property-placeholder"><span>&#127968;</span></div>
+                        {% endif %}
+                        <span class="property-badge">{{ prop.property_type }}</span>
+                    </div>
+                    <div class="property-info">
+                        <h3 class="property-title">{{ prop.title[:40] }}</h3>
+                        <p class="property-location">&#128205; {{ prop.locality or city_name }}</p>
+                        <div class="property-footer">
+                            <span class="property-price">{{ format_price(prop.price) }}</span>
+                            <a href="{{ url_for('properties.detail', property_id=prop.id) }}" class="btn btn-sm">View</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

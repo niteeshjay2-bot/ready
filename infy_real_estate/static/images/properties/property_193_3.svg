@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="bg193_3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg193_3)"/>
+  <rect x="50" y="120" width="700" height="300" rx="20" fill="rgba(255,255,255,0.15)"/>
+  <text x="400" y="250" font-family="Arial,sans-serif" font-size="72" fill="white" text-anchor="middle" dominant-baseline="middle">&#127968;</text>
+  <text x="400" y="330" font-family="Arial,sans-serif" font-size="24" fill="rgba(255,255,255,0.9)" text-anchor="middle">INFY Real Estate</text>
+  <text x="400" y="370" font-family="Arial,sans-serif" font-size="18" fill="rgba(255,255,255,0.7)" text-anchor="middle">Property #193 - Kitchen</text>
+  <text x="400" y="80" font-family="Arial,sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="middle">India's Smartest AI Powered Real Estate Platform</text>
+</svg>

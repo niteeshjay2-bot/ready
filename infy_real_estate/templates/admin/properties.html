@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Manage Properties{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Manage Properties</h1>
+            <a href="{{ url_for('admin.add_property') }}" class="btn btn-primary">+ Add Property</a>
+        </div>
+        <div class="admin-table-card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>City</th>
+                        <th>Featured</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prop in properties.items %}
+                    <tr>
+                        <td>{{ prop.id }}</td>
+                        <td>{{ prop.title[:35] }}</td>
+                        <td>{{ prop.property_type }}</td>
+                        <td>{{ format_price(prop.price) }}</td>
+                        <td>{{ prop.city.name if prop.city else 'N/A' }}</td>
+                        <td>{% if prop.is_featured %}&#11088;{% endif %}</td>
+                        <td class="action-cell">
+                            <a href="{{ url_for('properties.detail', property_id=prop.id) }}" class="btn btn-sm">View</a>
+                            <a href="{{ url_for('admin.edit_property', property_id=prop.id) }}" class="btn btn-sm btn-outline">Edit</a>
+                            <form method="POST" action="{{ url_for('admin.delete_property', property_id=prop.id) }}" style="display:inline" onsubmit="return confirm('Delete this property?')">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if properties.pages > 1 %}
+        <div class="pagination">
+            {% if properties.has_prev %}<a href="?page={{ properties.prev_num }}" class="btn btn-sm">Prev</a>{% endif %}
+            <span>Page {{ properties.page }}/{{ properties.pages }}</span>
+            {% if properties.has_next %}<a href="?page={{ properties.next_num }}" class="btn btn-sm">Next</a>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

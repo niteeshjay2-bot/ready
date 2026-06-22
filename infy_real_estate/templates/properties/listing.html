@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Properties{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Explore Properties</h1>
+            <p>Find your perfect property from {{ properties.total }} listings across India</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+            <form method="GET" class="filters-form">
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label>State</label>
+                        <select name="state_id" onchange="this.form.submit()">
+                            <option value="">All States</option>
+                            {% for state in states %}
+                            <option value="{{ state.id }}" {% if request.args.get('state_id')|int == state.id %}selected{% endif %}>{{ state.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <select name="city_id">
+                            <option value="">All Cities</option>
+                            {% for city in cities %}
+                            <option value="{{ city.id }}" {% if request.args.get('city_id')|int == city.id %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Property Type</label>
+                        <select name="property_type">
+                            <option value="">All Types</option>
+                            {% for ptype in property_types %}
+                            <option value="{{ ptype }}" {% if request.args.get('property_type') == ptype %}selected{% endif %}>{{ ptype }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Min Budget</label>
+                        <select name="min_price">
+                            <option value="">No Min</option>
+                            <option value="1000000" {% if request.args.get('min_price') == '1000000' %}selected{% endif %}>10 Lakhs</option>
+                            <option value="2500000" {% if request.args.get('min_price') == '2500000' %}selected{% endif %}>25 Lakhs</option>
+                            <option value="5000000" {% if request.args.get('min_price') == '5000000' %}selected{% endif %}>50 Lakhs</option>
+                            <option value="10000000" {% if request.args.get('min_price') == '10000000' %}selected{% endif %}>1 Crore</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Max Budget</label>
+                        <select name="max_price">
+                            <option value="">No Max</option>
+                            <option value="2500000" {% if request.args.get('max_price') == '2500000' %}selected{% endif %}>25 Lakhs</option>
+                            <option value="5000000" {% if request.args.get('max_price') == '5000000' %}selected{% endif %}>50 Lakhs</option>
+                            <option value="10000000" {% if request.args.get('max_price') == '10000000' %}selected{% endif %}>1 Crore</option>
+                            <option value="50000000" {% if request.args.get('max_price') == '50000000' %}selected{% endif %}>5 Crore</option>
+                            <option value="100000000" {% if request.args.get('max_price') == '100000000' %}selected{% endif %}>10 Crore</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bedrooms</label>
+                        <select name="bedrooms">
+                            <option value="">Any</option>
+                            <option value="1" {% if request.args.get('bedrooms') == '1' %}selected{% endif %}>1+</option>
+                            <option value="2" {% if request.args.get('bedrooms') == '2' %}selected{% endif %}>2+</option>
+                            <option value="3" {% if request.args.get('bedrooms') == '3' %}selected{% endif %}>3+</option>
+                            <option value="4" {% if request.args.get('bedrooms') == '4' %}selected{% endif %}>4+</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filters-amenities">
+                    <label class="checkbox-label"><input type="checkbox" name="car_parking" {% if request.args.get('car_parking') %}checked{% endif %}> Parking</label>
+                    <label class="checkbox-label"><input type="checkbox" name="swimming_pool" {% if request.args.get('swimming_pool') %}checked{% endif %}> Pool</label>
+                    <label class="checkbox-label"><input type="checkbox" name="gym" {% if request.args.get('gym') %}checked{% endif %}> Gym</label>
+                    <label class="checkbox-label"><input type="checkbox" name="security" {% if request.args.get('security') %}checked{% endif %}> Security</label>
+                    <label class="checkbox-label"><input type="checkbox" name="lift" {% if request.args.get('lift') %}checked{% endif %}> Lift</label>
+                    <label class="checkbox-label"><input type="checkbox" name="garden" {% if request.args.get('garden') %}checked{% endif %}> Garden</label>
+                    <label class="checkbox-label"><input type="checkbox" name="metro_connectivity" {% if request.args.get('metro_connectivity') %}checked{% endif %}> Metro</label>
+                </div>
+                <div class="filters-actions">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{{ url_for('properties.listing') }}" class="btn btn-outline">Clear All</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results -->
+        <div class="results-header">
+            <span>{{ properties.total }} properties found</span>
+            <select onchange="window.location.href='?sort='+this.value">
+                <option value="newest" {% if request.args.get('sort') == 'newest' %}selected{% endif %}>Newest First</option>
+                <option value="price_low" {% if request.args.get('sort') == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_high" {% if request.args.get('sort') == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                <option value="area" {% if request.args.get('sort') == 'area' %}selected{% endif %}>Largest Area</option>
+            </select>
+        </div>
+
+        <div class="property-grid">
+            {% for property in properties.items %}
+            <div class="property-card">
+                <div class="property-image">
+                    {% if property.images %}
+                    <img src="{{ url_for('static', filename='images/properties/' + property.images[0].filename) }}" alt="{{ property.title }}">
+                    {% else %}
+                    <div class="property-placeholder"><span>&#127968;</span></div>
+                    {% endif %}
+                    <span class="property-badge">{{ property.property_type }}</span>
+                </div>
+                <div class="property-info">
+                    <h3 class="property-title">{{ property.title[:45] }}{% if property.title|length > 45 %}...{% endif %}</h3>
+                    <p class="property-location">&#128205; {{ property.locality or '' }}{% if property.city %}, {{ property.city.name }}{% endif %}</p>
+                    <div class="property-features">
+                        <span>&#128719; {{ property.bedrooms }} BHK</span>
+                        <span>&#128704; {{ property.bathrooms }} Bath</span>
+                        <span>&#128207; {{ property.area_sqft }} sqft</span>
+                    </div>
+                    <div class="property-footer">
+                        <span class="property-price">{{ format_price(property.price) }}</span>
+                        <a href="{{ url_for('properties.detail', property_id=property.id) }}" class="btn btn-sm btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if properties.items|length == 0 %}
+        <div class="empty-state">
+            <span class="empty-icon">&#128269;</span>
+            <h3>No properties found</h3>
+            <p>Try adjusting your filters or <a href="{{ url_for('properties.listing') }}">view all properties</a></p>
+        </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        {% if properties.pages > 1 %}
+        <div class="pagination">
+            {% if properties.has_prev %}
+            <a href="?page={{ properties.prev_num }}" class="btn btn-sm">Previous</a>
+            {% endif %}
+            <span class="page-info">Page {{ properties.page }} of {{ properties.pages }}</span>
+            {% if properties.has_next %}
+            <a href="?page={{ properties.next_num }}" class="btn btn-sm">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

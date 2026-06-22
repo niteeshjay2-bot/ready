@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Manage Images{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Manage Property Images</h1>
+        </div>
+        <div class="images-grid">
+            {% for img in images.items %}
+            <div class="image-card">
+                <img src="{{ url_for('static', filename='images/properties/' + img.filename) }}" alt="Property Image">
+                <div class="image-info">
+                    <span>Property #{{ img.property_id }}</span>
+                    <span>{{ img.image_type }}</span>
+                </div>
+                <form method="POST" action="{{ url_for('admin.delete_image', image_id=img.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% if images.items|length == 0 %}
+        <div class="empty-state"><h3>No images uploaded yet</h3></div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

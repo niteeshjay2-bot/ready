@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Saved Properties{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>&#10084; Saved Properties</h1>
+            <p>Your favorite properties in one place</p>
+        </div>
+        {% if saved %}
+        <div class="property-grid">
+            {% for item in saved %}
+            <div class="property-card">
+                <div class="property-image">
+                    {% if item.property.images %}
+                    <img src="{{ url_for('static', filename='images/properties/' + item.property.images[0].filename) }}" alt="{{ item.property.title }}">
+                    {% else %}
+                    <div class="property-placeholder"><span>&#127968;</span></div>
+                    {% endif %}
+                </div>
+                <div class="property-info">
+                    <h3 class="property-title">{{ item.property.title[:40] }}</h3>
+                    <p class="property-location">&#128205; {{ item.property.locality }}</p>
+                    <div class="property-footer">
+                        <span class="property-price">{{ format_price(item.property.price) }}</span>
+                        <a href="{{ url_for('properties.detail', property_id=item.property_id) }}" class="btn btn-sm">View</a>
+                    </div>
+                    <form method="POST" action="{{ url_for('dashboard.remove_saved', saved_id=item.id) }}" class="mt-1">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline">Remove</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <span class="empty-icon">&#10084;</span>
+            <h3>No saved properties</h3>
+            <p>Start browsing and save properties you like!</p>
+            <a href="{{ url_for('properties.listing') }}" class="btn btn-primary">Browse Properties</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

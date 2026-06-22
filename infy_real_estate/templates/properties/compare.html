@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Compare Properties{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Compare Properties</h1>
+            <p>Side-by-side comparison with AI insights</p>
+        </div>
+        {% if comparisons %}
+        <div class="compare-table-wrapper">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        {% for comp in comparisons %}
+                        <th>{{ comp.property.title[:30] }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Price</strong></td>{% for comp in comparisons %}<td>{{ format_price(comp.property.price) }}</td>{% endfor %}</tr>
+                    <tr><td><strong>Price/sqft</strong></td>{% for comp in comparisons %}<td>{{ format_price(comp.price_per_sqft) }}</td>{% endfor %}</tr>
+                    <tr><td><strong>Area</strong></td>{% for comp in comparisons %}<td>{{ comp.property.area_sqft }} sqft</td>{% endfor %}</tr>
+                    <tr><td><strong>Type</strong></td>{% for comp in comparisons %}<td>{{ comp.property.property_type }}</td>{% endfor %}</tr>
+                    <tr><td><strong>Bedrooms</strong></td>{% for comp in comparisons %}<td>{{ comp.property.bedrooms }}</td>{% endfor %}</tr>
+                    <tr><td><strong>City</strong></td>{% for comp in comparisons %}<td>{{ comp.city_name }}</td>{% endfor %}</tr>
+                    <tr><td><strong>Investment Score</strong></td>{% for comp in comparisons %}<td class="score-cell">{{ comp.investment.investment_score|round|int }}/100</td>{% endfor %}</tr>
+                    <tr><td><strong>Risk Level</strong></td>{% for comp in comparisons %}<td>{{ comp.investment.risk_level }}</td>{% endfor %}</tr>
+                    <tr><td><strong>ROI Potential</strong></td>{% for comp in comparisons %}<td>{{ comp.investment.roi_potential }}</td>{% endfor %}</tr>
+                    <tr><td><strong>Rental Yield</strong></td>{% for comp in comparisons %}<td>{{ comp.roi.rental_yield }}%</td>{% endfor %}</tr>
+                    <tr><td><strong>5Y ROI</strong></td>{% for comp in comparisons %}<td class="text-green">{{ comp.roi.total_roi }}%</td>{% endfor %}</tr>
+                    <tr><td><strong>AI Recommendation</strong></td>{% for comp in comparisons %}<td>{{ comp.investment.recommendation }}</td>{% endfor %}</tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No properties to compare</h3>
+            <p>Select properties from the listing page to compare them.</p>
+            <a href="{{ url_for('properties.listing') }}" class="btn btn-primary">Browse Properties</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

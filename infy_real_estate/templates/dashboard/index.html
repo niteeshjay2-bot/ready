@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="page-header">
+            <h1>Welcome, {{ current_user.full_name }}!</h1>
+            <p>Your AI-powered real estate dashboard</p>
+        </div>
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon">&#10084;</div>
+                <div class="stat-info"><span class="stat-num">{{ saved_count }}</span><span>Saved Properties</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">&#128200;</div>
+                <div class="stat-info"><span class="stat-num">{{ prediction_count }}</span><span>AI Predictions</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">&#128172;</div>
+                <div class="stat-info"><span class="stat-num">{{ chat_count }}</span><span>AI Chats</span></div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>&#10084; Recently Saved</h3>
+                {% if recent_saved %}
+                <div class="dashboard-list">
+                    {% for saved in recent_saved %}
+                    <a href="{{ url_for('properties.detail', property_id=saved.property_id) }}" class="dashboard-list-item">
+                        <span>{{ saved.property.title[:40] }}</span>
+                        <span>{{ format_price(saved.property.price) }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-text">No saved properties yet.</p>
+                {% endif %}
+                <a href="{{ url_for('dashboard.saved_properties') }}" class="btn btn-sm">View All</a>
+            </div>
+            <div class="dashboard-card">
+                <h3>&#128200; Recent Predictions</h3>
+                {% if recent_predictions %}
+                <div class="dashboard-list">
+                    {% for pred in recent_predictions %}
+                    <div class="dashboard-list-item">
+                        <span>{{ pred.city }} - {{ pred.property_type }}</span>
+                        <span>{{ format_price(pred.current_price) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-text">No predictions yet.</p>
+                {% endif %}
+                <a href="{{ url_for('ai.price_predictor') }}" class="btn btn-sm">Make Prediction</a>
+            </div>
+        </div>
+
+        <div class="dashboard-actions">
+            <a href="{{ url_for('properties.listing') }}" class="action-card"><span>&#128269;</span><span>Browse Properties</span></a>
+            <a href="{{ url_for('ai.price_predictor') }}" class="action-card"><span>&#128200;</span><span>Price Predictor</span></a>
+            <a href="{{ url_for('ai.investment_analyzer') }}" class="action-card"><span>&#128176;</span><span>Investment Analyzer</span></a>
+            <a href="{{ url_for('ai.chatbot') }}" class="action-card"><span>&#129302;</span><span>INFY AI Chat</span></a>
+        </div>
+    </div>
+</section>
+{% endblock %}
