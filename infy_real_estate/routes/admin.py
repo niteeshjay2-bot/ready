@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Admin Panel Routes
+INFY Nest Real Estate - Admin Panel Routes
 Property management, user management, analytics
 """
 import os

@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Chatbot (INFY AI)
+INFY Nest Real Estate - AI Chatbot (INFY AI)
 Conversational AI assistant for real estate queries
 """
 import random

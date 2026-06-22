@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Generate Placeholder Property Images (SVG)
+INFY Nest Real Estate - Generate Placeholder Property Images (SVG)
 Creates local SVG image files for all properties
 """
 import os
@@ -37,7 +37,7 @@ def generate_svg(prop_id, img_num, width=800, height=500):
   <rect width="{width}" height="{height}" fill="url(#bg{prop_id}_{img_num})"/>
   <rect x="50" y="120" width="700" height="300" rx="20" fill="rgba(255,255,255,0.15)"/>
   <text x="400" y="250" font-family="Arial,sans-serif" font-size="72" fill="white" text-anchor="middle" dominant-baseline="middle">&#127968;</text>
-  <text x="400" y="330" font-family="Arial,sans-serif" font-size="24" fill="rgba(255,255,255,0.9)" text-anchor="middle">INFY Real Estate</text>
+  <text x="400" y="330" font-family="Arial,sans-serif" font-size="24" fill="rgba(255,255,255,0.9)" text-anchor="middle">INFY Nest Real Estate</text>
   <text x="400" y="370" font-family="Arial,sans-serif" font-size="18" fill="rgba(255,255,255,0.7)" text-anchor="middle">Property #{prop_id} - {room_type[0]}</text>
   <text x="400" y="80" font-family="Arial,sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="middle">India's Smartest AI Powered Real Estate Platform</text>
 </svg>'''

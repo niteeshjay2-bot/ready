@@ -1,5 +1,5 @@
 """
-INFY Real Estate - India's Smartest AI Powered Real Estate Platform
+INFY Nest Real Estate - India's Smartest AI Powered Real Estate Platform
 Main Application Entry Point
 """
 import os

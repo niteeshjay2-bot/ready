@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Routes
+INFY Nest Real Estate - AI Routes
 Price Prediction, Chatbot, Investment Analysis
 """
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash

@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Database Models
+INFY Nest Real Estate - Database Models
 """
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash

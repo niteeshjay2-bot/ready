@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Flask Extensions
+INFY Nest Real Estate - Flask Extensions
 Separated to avoid circular imports
 """
 from flask_sqlalchemy import SQLAlchemy

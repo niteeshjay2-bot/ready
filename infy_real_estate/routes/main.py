@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Main Routes
+INFY Nest Real Estate - Main Routes
 Landing page and public pages
 """
 from flask import Blueprint, render_template, request, jsonify

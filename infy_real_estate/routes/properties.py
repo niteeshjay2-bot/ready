@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Property Routes
+INFY Nest Real Estate - Property Routes
 Property listing, search, details, comparison, and saved properties
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify

@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Authentication Routes
+INFY Nest Real Estate - Authentication Routes
 Handles registration, login, logout, password reset, and profile
 """
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session

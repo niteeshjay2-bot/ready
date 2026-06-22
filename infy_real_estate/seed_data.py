@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Seed Data
+INFY Nest Real Estate - Seed Data
 Populates database with states, cities, properties, and admin user
 """
 import random
