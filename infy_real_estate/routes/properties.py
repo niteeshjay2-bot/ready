@@ -109,7 +109,13 @@ def listing():
 
     # Get filter options
     states = State.query.order_by(State.name).all()
-    cities = City.query.order_by(City.name).all()
+
+    # Only show cities for selected state (or all if no state selected)
+    state_id = request.args.get('state_id', type=int)
+    if state_id:
+        cities = City.query.filter_by(state_id=state_id).order_by(City.name).all()
+    else:
+        cities = City.query.order_by(City.name).all()
 
     property_types = ['Apartment', 'Villa', 'Independent House', 'Farm House',
                       'Studio Apartment', 'Penthouse', 'Commercial Office',
