@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from functools import wraps
-from app import db
+from extensions import db
 from models import (User, Property, City, State, PropertyImage,
                     ChatSession, PredictionHistory, SavedProperty)
 from ai_modules.price_predictor import format_indian_price

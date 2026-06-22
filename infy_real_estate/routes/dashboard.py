@@ -3,7 +3,7 @@ INFY Real Estate - User Dashboard Routes
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app import db
+from extensions import db
 from models import (Property, SavedProperty, ChatSession, ChatMessage,
                     PredictionHistory, City)
 from ai_modules.price_predictor import format_indian_price

@@ -4,7 +4,7 @@ Property listing, search, details, comparison, and saved properties
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from app import db
+from extensions import db
 from models import Property, City, State, PropertyImage, SavedProperty
 from ai_modules.price_predictor import format_indian_price, predict_price, get_roi_analysis
 from ai_modules.investment_scorer import calculate_investment_score

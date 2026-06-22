@@ -4,7 +4,7 @@ Price Prediction, Chatbot, Investment Analysis
 """
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app import db
+from extensions import db
 from models import (Property, City, State, ChatSession, ChatMessage,
                     PredictionHistory)
 from ai_modules.price_predictor import predict_price, format_indian_price, get_roi_analysis

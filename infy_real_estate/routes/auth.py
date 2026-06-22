@@ -5,7 +5,7 @@ Handles registration, login, logout, password reset, and profile
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
-from app import db
+from extensions import db
 from models import User
 
 auth_bp = Blueprint('auth', __name__)

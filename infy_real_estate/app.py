@@ -4,14 +4,8 @@ Main Application Entry Point
 """
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
 from config import Config
-
-db = SQLAlchemy()
-login_manager = LoginManager()
-csrf = CSRFProtect()
+from extensions import db, login_manager, csrf
 
 
 def create_app(config_class=Config):
@@ -43,6 +37,13 @@ def create_app(config_class=Config):
 
     # Create upload directory
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+    # Import models to ensure they are registered
+    from models import User, State, City, Property, PropertyImage, SavedProperty, ChatSession, ChatMessage, PredictionHistory
+
+    # Register template globals
+    from ai_modules.price_predictor import format_indian_price
+    app.jinja_env.globals['format_price'] = format_indian_price
 
     with app.app_context():
         db.create_all()

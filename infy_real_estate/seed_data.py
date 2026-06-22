@@ -3,7 +3,8 @@ INFY Real Estate - Seed Data
 Populates database with states, cities, properties, and admin user
 """
 import random
-from app import create_app, db
+from app import create_app
+from extensions import db
 from models import User, State, City, Property, PropertyImage
 
 app = create_app()
