@@ -45,6 +45,57 @@ def create_app(config_class=Config):
     from ai_modules.price_predictor import format_indian_price
     app.jinja_env.globals['format_price'] = format_indian_price
 
+    # House/Property image URLs from Unsplash (all verified house/real estate images)
+    HOUSE_IMAGES = [
+        'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1598228723793-52759bba239c?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1602343168051-4f784a945b44?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600563438938-a9a27216b4f5?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1616486338812-3dadae5b4ace?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1617325247661-675ab386e5bb?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1522771739806-4e41a8ae467a?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1574643156929-51fa098b0394?w=800&h=500&fit=crop',
+        'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=800&h=500&fit=crop',
+    ]
+
+    def get_property_image(property_id, index=0):
+        """Get a house image URL based on property ID and image index"""
+        img_index = (property_id * 7 + index * 3) % len(HOUSE_IMAGES)
+        return HOUSE_IMAGES[img_index]
+
+    app.jinja_env.globals['get_property_image'] = get_property_image
+
     with app.app_context():
         db.create_all()
         # Auto-seed if database is empty

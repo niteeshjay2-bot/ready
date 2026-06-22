@@ -90,7 +90,7 @@
                 <div class="existing-images">
                     {% for img in images %}
                     <div class="img-thumb">
-                        <img src="https://picsum.photos/seed/property{{ property.id }}_{{ loop.index }}/800/500" alt="Image">
+                        <img src="{{ get_property_image(property.id, loop.index0) }}" alt="Image">
                     </div>
                     {% endfor %}
                 </div>

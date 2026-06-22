@@ -13,7 +13,7 @@
             {% for item in saved %}
             <div class="property-card">
                 <div class="property-image">
-                    <img src="https://picsum.photos/seed/property{{ item.property.id }}/800/500" alt="{{ item.property.title }}">
+                    <img src="{{ get_property_image(item.property.id) }}" alt="{{ item.property.title }}">
                 </div>
                 <div class="property-info">
                     <h3 class="property-title">{{ item.property.title[:40] }}</h3>
