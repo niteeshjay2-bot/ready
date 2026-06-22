@@ -13,11 +13,7 @@
             {% for item in saved %}
             <div class="property-card">
                 <div class="property-image">
-                    {% if item.property.images %}
-                    <img src="{{ item.property.images[0].image_url if item.property.images[0].image_url else url_for('static', filename='images/properties/' + item.property.images[0].filename) }}" alt="{{ item.property.title }}">
-                    {% else %}
-                    <div class="property-placeholder"><span>&#127968;</span></div>
-                    {% endif %}
+                    <img src="https://picsum.photos/seed/property{{ item.property.id }}/800/500" alt="{{ item.property.title }}">
                 </div>
                 <div class="property-info">
                     <h3 class="property-title">{{ item.property.title[:40] }}</h3>

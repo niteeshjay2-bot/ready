@@ -7,19 +7,14 @@
         <!-- Image Gallery -->
         <div class="gallery-section">
             <div class="gallery-main">
-                {% if images %}
-                <img src="{{ images[0].image_url if images[0].image_url else url_for('static', filename='images/properties/' + images[0].filename) }}" alt="{{ property.title }}" id="mainImage">
-                {% else %}
-                <div class="property-placeholder large"><span>&#127968;</span></div>
-                {% endif %}
+                <img src="https://picsum.photos/seed/property{{ property.id }}/800/500" alt="{{ property.title }}" id="mainImage">
             </div>
-            {% if images|length > 1 %}
             <div class="gallery-thumbs">
-                {% for img in images %}
-                <img src="{{ img.image_url if img.image_url else url_for('static', filename='images/properties/' + img.filename) }}" alt="Image {{ loop.index }}" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
-                {% endfor %}
+                <img src="https://picsum.photos/seed/property{{ property.id }}_1/800/500" alt="Image 1" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
+                <img src="https://picsum.photos/seed/property{{ property.id }}_2/800/500" alt="Image 2" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
+                <img src="https://picsum.photos/seed/property{{ property.id }}_3/800/500" alt="Image 3" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
+                <img src="https://picsum.photos/seed/property{{ property.id }}_4/800/500" alt="Image 4" onclick="document.getElementById('mainImage').src=this.src" class="thumb-img">
             </div>
-            {% endif %}
         </div>
 
         <!-- Property Info -->
@@ -205,11 +200,7 @@
                 {% for prop in related %}
                 <div class="property-card">
                     <div class="property-image">
-                        {% if prop.images %}
-                        <img src="{{ prop.images[0].image_url if prop.images[0].image_url else url_for('static', filename='images/properties/' + prop.images[0].filename) }}" alt="{{ prop.title }}">
-                        {% else %}
-                        <div class="property-placeholder"><span>&#127968;</span></div>
-                        {% endif %}
+                        <img src="https://picsum.photos/seed/property{{ prop.id }}/800/500" alt="{{ prop.title }}">
                         <span class="property-badge">{{ prop.property_type }}</span>
                     </div>
                     <div class="property-info">

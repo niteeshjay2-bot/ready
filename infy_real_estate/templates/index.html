@@ -84,13 +84,7 @@
             {% for property in featured_properties[:8] %}
             <div class="property-card">
                 <div class="property-image">
-                    {% if property.images %}
-                    <img src="{{ property.images[0].image_url if property.images[0].image_url else url_for('static', filename='images/properties/' + property.images[0].filename) }}" alt="{{ property.title }}">
-                    {% else %}
-                    <div class="property-placeholder">
-                        <span>&#127968;</span>
-                    </div>
-                    {% endif %}
+                    <img src="https://picsum.photos/seed/property{{ property.id }}/800/500" alt="{{ property.title }}">
                     <span class="property-badge">{{ property.property_type }}</span>
                     {% if property.is_featured %}<span class="property-badge featured-badge">Featured</span>{% endif %}
                 </div>
