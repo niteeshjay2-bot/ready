@@ -230,28 +230,86 @@ def _find_matching_properties(message):
     Extract city, budget, and property type from user message
     and return matching properties from the database.
     """
-    message_lower = message.lower()
+    import re
+    message_lower = message.lower().strip()
 
-    # Find city in message
-    all_cities = City.query.all()
-    found_city = None
-    for city in all_cities:
-        if city.name.lower() in message_lower:
-            found_city = city
-            break
-
-    # Also check common alternate names
+    # Comprehensive city aliases and common misspellings
     city_aliases = {
-        'bangalore': 'Bengaluru', 'bombay': 'Mumbai', 'madras': 'Chennai',
-        'calcutta': 'Kolkata', 'gurgaon': 'Gurgaon', 'noida': 'Noida',
-        'hyderabad': 'Hyderabad', 'delhi': 'New Delhi',
+        # Bengaluru variants
+        'bengaluru': 'Bengaluru', 'bangalore': 'Bengaluru', 'banglore': 'Bengaluru',
+        'bengluru': 'Bengaluru', 'benglore': 'Bengaluru', 'bangaluru': 'Bengaluru',
+        'bangluru': 'Bengaluru', 'blr': 'Bengaluru',
+        # Mumbai variants
+        'mumbai': 'Mumbai', 'bombay': 'Mumbai', 'mombai': 'Mumbai',
+        # Chennai variants
+        'chennai': 'Chennai', 'madras': 'Chennai', 'chenai': 'Chennai',
+        # Hyderabad variants
+        'hyderabad': 'Hyderabad', 'hyd': 'Hyderabad', 'hydrabad': 'Hyderabad',
+        # Kolkata variants
+        'kolkata': 'Kolkata', 'calcutta': 'Kolkata', 'kolkatta': 'Kolkata',
+        # Delhi variants
+        'delhi': 'New Delhi', 'new delhi': 'New Delhi', 'dilli': 'New Delhi',
+        # Pune variants
+        'pune': 'Pune', 'poona': 'Pune',
+        # Gurgaon variants
+        'gurgaon': 'Gurgaon', 'gurugram': 'Gurgaon', 'gurgoan': 'Gurgaon',
+        # Noida
+        'noida': 'Noida', 'greater noida': 'Noida',
+        # Others
+        'ahmedabad': 'Ahmedabad', 'amdavad': 'Ahmedabad',
+        'jaipur': 'Jaipur', 'jaypur': 'Jaipur',
+        'lucknow': 'Lucknow', 'lakhnau': 'Lucknow',
+        'chandigarh': 'Chandigarh',
+        'kochi': 'Kochi', 'cochin': 'Kochi',
+        'indore': 'Indore',
+        'coimbatore': 'Coimbatore',
+        'visakhapatnam': 'Visakhapatnam', 'vizag': 'Visakhapatnam',
+        'mysuru': 'Mysuru', 'mysore': 'Mysuru',
+        'mangaluru': 'Mangaluru', 'mangalore': 'Mangaluru',
+        'thiruvananthapuram': 'Thiruvananthapuram', 'trivandrum': 'Thiruvananthapuram',
+        'bhubaneswar': 'Bhubaneswar',
+        'patna': 'Patna',
+        'ranchi': 'Ranchi',
+        'guwahati': 'Guwahati',
+        'dehradun': 'Dehradun',
+        'surat': 'Surat',
+        'nagpur': 'Nagpur',
+        'nashik': 'Nashik',
+        'vadodara': 'Vadodara', 'baroda': 'Vadodara',
+        'thane': 'Thane',
+        'bhopal': 'Bhopal',
     }
+
+    # Step 1: Try alias matching first (handles misspellings)
+    found_city = None
+    for alias, actual_name in city_aliases.items():
+        if alias in message_lower:
+            found_city = City.query.filter_by(name=actual_name).first()
+            if found_city:
+                break
+
+    # Step 2: If no alias match, try matching against database city names
     if not found_city:
-        for alias, actual in city_aliases.items():
-            if alias in message_lower:
-                found_city = City.query.filter_by(name=actual).first()
-                if found_city:
-                    break
+        all_cities = City.query.all()
+        for city in all_cities:
+            if city.name.lower() in message_lower:
+                found_city = city
+                break
+
+    # Step 3: Fuzzy partial match - check if any word in message starts with a city name
+    if not found_city:
+        words = message_lower.split()
+        all_cities = City.query.all()
+        for city in all_cities:
+            city_lower = city.name.lower()
+            for word in words:
+                # Check if word is at least 4 chars and starts similarly to city name
+                if len(word) >= 4 and len(city_lower) >= 4:
+                    if city_lower.startswith(word[:4]) or word.startswith(city_lower[:4]):
+                        found_city = city
+                        break
+            if found_city:
+                break
 
     # Build query
     query = Property.query
@@ -260,8 +318,7 @@ def _find_matching_properties(message):
         query = query.filter_by(city_id=found_city.id)
 
     # Try to extract budget
-    import re
-    budget_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:cr|crore)', message_lower)
+    budget_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:cr|crore|crores)', message_lower)
     if budget_match:
         max_price = float(budget_match.group(1)) * 10000000
         query = query.filter(Property.price <= max_price)
@@ -292,7 +349,7 @@ def _find_matching_properties(message):
     # Return matching properties (limit 10)
     properties = query.limit(10).all()
 
-    # If no results with filters, try just city
+    # If no results with all filters, try just city
     if not properties and found_city:
         properties = Property.query.filter_by(city_id=found_city.id).limit(10).all()
 
