@@ -171,8 +171,8 @@ def chat_message():
     db.session.add(user_msg)
 
     # Generate AI response
-    # Try to find matching properties for context
-    properties = Property.query.limit(10).all()
+    # Try to find matching properties based on user's message
+    properties = _find_matching_properties(message)
     ai_response = generate_response(message, properties)
 
     # Save AI response
@@ -222,3 +222,78 @@ def delete_chat(session_id):
     db.session.commit()
 
     return jsonify({'success': True})
+
+
+
+def _find_matching_properties(message):
+    """
+    Extract city, budget, and property type from user message
+    and return matching properties from the database.
+    """
+    message_lower = message.lower()
+
+    # Find city in message
+    all_cities = City.query.all()
+    found_city = None
+    for city in all_cities:
+        if city.name.lower() in message_lower:
+            found_city = city
+            break
+
+    # Also check common alternate names
+    city_aliases = {
+        'bangalore': 'Bengaluru', 'bombay': 'Mumbai', 'madras': 'Chennai',
+        'calcutta': 'Kolkata', 'gurgaon': 'Gurgaon', 'noida': 'Noida',
+        'hyderabad': 'Hyderabad', 'delhi': 'New Delhi',
+    }
+    if not found_city:
+        for alias, actual in city_aliases.items():
+            if alias in message_lower:
+                found_city = City.query.filter_by(name=actual).first()
+                if found_city:
+                    break
+
+    # Build query
+    query = Property.query
+
+    if found_city:
+        query = query.filter_by(city_id=found_city.id)
+
+    # Try to extract budget
+    import re
+    budget_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:cr|crore)', message_lower)
+    if budget_match:
+        max_price = float(budget_match.group(1)) * 10000000
+        query = query.filter(Property.price <= max_price)
+    else:
+        budget_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:lakh|lac|lakhs)', message_lower)
+        if budget_match:
+            max_price = float(budget_match.group(1)) * 100000
+            query = query.filter(Property.price <= max_price)
+
+    # Try to extract property type
+    type_keywords = {
+        'villa': 'Villa', 'apartment': 'Apartment', 'flat': 'Apartment',
+        'house': 'Independent House', 'penthouse': 'Penthouse',
+        'studio': 'Studio Apartment', 'farm': 'Farm House',
+        'office': 'Commercial Office', 'shop': 'Shop',
+        'land': 'Land', 'plot': 'Plots',
+    }
+    for keyword, ptype in type_keywords.items():
+        if keyword in message_lower:
+            query = query.filter_by(property_type=ptype)
+            break
+
+    # Try to extract bedrooms
+    bhk_match = re.search(r'(\d+)\s*bhk', message_lower)
+    if bhk_match:
+        query = query.filter_by(bedrooms=int(bhk_match.group(1)))
+
+    # Return matching properties (limit 10)
+    properties = query.limit(10).all()
+
+    # If no results with filters, try just city
+    if not properties and found_city:
+        properties = Property.query.filter_by(city_id=found_city.id).limit(10).all()
+
+    return properties
