@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Routes
+INFY Nest Real Estate - AI Routes
 Price Prediction, Chatbot, Investment Analysis
 """
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
@@ -284,7 +284,7 @@ def _find_matching_properties(message):
     found_city = None
     for alias, actual_name in city_aliases.items():
         if alias in message_lower:
-            found_city = City.query.filter_by(name=actual_name).first()
+            found_city = City.query.filter(City.name.ilike(actual_name)).first()
             if found_city:
                 break
 
@@ -303,9 +303,9 @@ def _find_matching_properties(message):
         for city in all_cities:
             city_lower = city.name.lower()
             for word in words:
-                # Check if word is at least 4 chars and starts similarly to city name
-                if len(word) >= 4 and len(city_lower) >= 4:
-                    if city_lower.startswith(word[:4]) or word.startswith(city_lower[:4]):
+                # Check if word is at least 5 chars and closely matches a city name
+                if len(word) >= 5 and len(city_lower) >= 5:
+                    if city_lower.startswith(word[:5]) or word.startswith(city_lower[:5]):
                         found_city = city
                         break
             if found_city:

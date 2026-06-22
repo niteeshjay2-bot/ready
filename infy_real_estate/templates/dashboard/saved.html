@@ -13,11 +13,7 @@
             {% for item in saved %}
             <div class="property-card">
                 <div class="property-image">
-                    {% if item.property.images %}
-                    <img src="{{ url_for('static', filename='images/properties/' + item.property.images[0].filename) }}" alt="{{ item.property.title }}">
-                    {% else %}
-                    <div class="property-placeholder"><span>&#127968;</span></div>
-                    {% endif %}
+                    <img src="{{ get_property_image(item.property.id) }}" alt="{{ item.property.title }}" onerror="this.onerror=null;this.src='{{ fallback_image }}'">
                 </div>
                 <div class="property-info">
                     <h3 class="property-title">{{ item.property.title[:40] }}</h3>

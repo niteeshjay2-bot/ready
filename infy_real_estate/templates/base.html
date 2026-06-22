@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}INFY Real Estate{% endblock %} - India's Smartest AI Powered Real Estate Platform</title>
+    <title>{% block title %}INFY Nest Real Estate{% endblock %} - India's Smartest AI Powered Real Estate Platform</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -13,7 +13,7 @@
         <div class="container nav-container">
             <a href="{{ url_for('main.index') }}" class="nav-brand">
                 <span class="brand-icon">&#9962;</span>
-                <span class="brand-text">INFY <span class="brand-highlight">Real Estate</span></span>
+                <span class="brand-text">INFY <span class="brand-highlight">Nest</span></span>
             </a>
 
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
@@ -29,7 +29,7 @@
                         <li><a href="{{ url_for('ai.price_predictor') }}">Price Predictor</a></li>
                         <li><a href="{{ url_for('ai.investment_analyzer') }}">Investment Analyzer</a></li>
                         {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('ai.chatbot') }}">INFY AI Chat</a></li>
+                        <li><a href="{{ url_for('ai.chatbot') }}">INFY Nest AI Chat</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -80,7 +80,7 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-section">
-                    <h3 class="footer-brand">&#9962; INFY Real Estate</h3>
+                    <h3 class="footer-brand">&#9962; INFY Nest Real Estate</h3>
                     <p>India's Smartest AI Powered Real Estate Platform. Find your dream property with AI-powered insights.</p>
                 </div>
                 <div class="footer-section">
@@ -105,14 +105,14 @@
                 <div class="footer-section">
                     <h4>Contact</h4>
                     <ul>
-                        <li>Email: info@infyrealestate.com</li>
+                        <li>Email: info@infynestrealestate.com</li>
                         <li>Phone: +91 98765 43210</li>
                         <li>Mumbai, Maharashtra, India</li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 INFY Real Estate. All rights reserved. | India's Smartest AI Powered Real Estate Platform</p>
+                <p>&copy; 2024 INFY Nest Real Estate. All rights reserved. | India's Smartest AI Powered Real Estate Platform</p>
             </div>
         </div>
     </footer>

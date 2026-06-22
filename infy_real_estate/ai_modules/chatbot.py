@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Chatbot (INFY AI)
+INFY Nest Real Estate - AI Chatbot (INFY AI)
 Conversational AI assistant for real estate queries
 """
 import random
@@ -181,16 +181,21 @@ def generate_response(user_message, properties=None):
         )
 
     # Check knowledge base topics
-    for topic, data in KNOWLEDGE_BASE.items():
-        if any(kw in message_lower for kw in data['keywords']):
-            return random.choice(data['responses'])
+    # BUT only if no properties were found from the database
+    # (if properties exist, user is searching for specific city/type results)
+    if not properties:
+        for topic, data in KNOWLEDGE_BASE.items():
+            if any(kw in message_lower for kw in data['keywords']):
+                return random.choice(data['responses'])
 
     # Check for EMI calculation
-    if 'emi' in message_lower or 'calculate' in message_lower:
+    if 'emi' in message_lower or ('calculate' in message_lower and not properties):
         return calculate_emi_response(message_lower)
 
     # Check for property search
-    if any(word in message_lower for word in ['villa', 'apartment', 'flat', 'house', 'property', 'bhk']):
+    if properties or any(word in message_lower for word in ['villa', 'apartment', 'flat', 'house', 'property', 'bhk',
+                                               'show', 'find', 'search', 'looking', 'need', 'want',
+                                               'properties', 'listing', 'available']):
         return generate_property_search_response(message_lower, properties)
 
     # Check for price query
@@ -298,11 +303,17 @@ def generate_property_search_response(message, properties=None):
     """Generate response for property search queries"""
     # Extract city names
     cities = ['hyderabad', 'bengaluru', 'bangalore', 'mumbai', 'delhi', 'pune',
-              'chennai', 'kolkata', 'ahmedabad', 'jaipur', 'noida', 'gurgaon']
+              'chennai', 'kolkata', 'ahmedabad', 'jaipur', 'noida', 'gurgaon',
+              'chandigarh', 'lucknow', 'indore', 'kochi', 'cochin', 'vizag',
+              'coimbatore', 'madurai', 'surat', 'nagpur', 'thane', 'bhopal']
     found_city = None
     for city in cities:
         if city in message:
             found_city = city.title()
+            if found_city == 'Bangalore':
+                found_city = 'Bengaluru'
+            elif found_city == 'Cochin':
+                found_city = 'Kochi'
             break
 
     # Extract property type
@@ -329,14 +340,17 @@ def generate_property_search_response(message, properties=None):
             response += f"**{i}. {prop.title}**\n"
             response += f"   - Price: {format_indian_price(prop.price)}\n"
             response += f"   - Area: {prop.area_sqft} sq ft | {prop.bedrooms} BHK\n"
-            response += f"   - Location: {prop.locality}\n\n"
+            response += f"   - Location: {prop.locality}"
+            if prop.city:
+                response += f", {prop.city.name}"
+            response += "\n\n"
         response += "\nWould you like more details on any of these properties?"
     else:
         response += (
             "I'd recommend checking our property listings with these filters. "
             "You can also use our **Smart Search** feature to find exactly what you need!\n\n"
             "**Tips for your search:**\n"
-            f"- {'Explore localities like ' + found_city + ' suburbs for better value' if found_city else 'Specify a city for targeted results'}\n"
+            f"- {'Explore localities in ' + found_city + ' for better value' if found_city else 'Specify a city for targeted results'}\n"
             "- Use our AI Price Predictor to know fair prices\n"
             "- Check Investment Score before buying\n"
             "- Compare properties side by side\n\n"

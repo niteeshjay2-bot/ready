@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Seed Data
+INFY Nest Real Estate - Seed Data
 Populates database with states, cities, properties, and admin user
 """
 import random
@@ -270,8 +270,85 @@ def seed_database():
         db.session.commit()
         print(f"Created {property_count} properties")
 
-        # Create property images (link to placeholder files)
-        print("Creating property image records...")
+        # Real property image URLs from Unsplash (free to use)
+        PROPERTY_IMAGE_URLS = {
+            'main': [
+                'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+                'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+                'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
+                'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+                'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80',
+                'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&q=80',
+                'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
+                'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=800&q=80',
+                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80',
+                'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
+                'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&q=80',
+                'https://images.unsplash.com/photo-1602343168051-4f784a945b44?w=800&q=80',
+                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+                'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=80',
+                'https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800&q=80',
+                'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
+                'https://images.unsplash.com/photo-1576941089067-2de3c901e126?w=800&q=80',
+                'https://images.unsplash.com/photo-1598228723793-52759bba239c?w=800&q=80',
+                'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80',
+            ],
+            'living_room': [
+                'https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800&q=80',
+                'https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=800&q=80',
+                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+                'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',
+                'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=800&q=80',
+                'https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=800&q=80',
+                'https://images.unsplash.com/photo-1616486338812-3dadae5b4ace?w=800&q=80',
+                'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=800&q=80',
+                'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800&q=80',
+                'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=800&q=80',
+                'https://images.unsplash.com/photo-1567767292784-4022b30ff2b2?w=800&q=80',
+                'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=800&q=80',
+                'https://images.unsplash.com/photo-1600210491369-e753d80a41f3?w=800&q=80',
+                'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80',
+            ],
+            'bedroom': [
+                'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80',
+                'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
+                'https://images.unsplash.com/photo-1617325247661-675ab386e5bb?w=800&q=80',
+                'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&q=80',
+                'https://images.unsplash.com/photo-1522771739806-4e41a8ae467a?w=800&q=80',
+                'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80',
+                'https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800&q=80',
+                'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=800&q=80',
+                'https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=800&q=80',
+                'https://images.unsplash.com/photo-1574643156929-51fa098b0394?w=800&q=80',
+                'https://images.unsplash.com/photo-1590490360182-c33d7b6b2feb?w=800&q=80',
+                'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&q=80',
+                'https://images.unsplash.com/photo-1612320648774-0a1f0626e8b4?w=800&q=80',
+                'https://images.unsplash.com/photo-1621891334261-cbbe9be1d7c2?w=800&q=80',
+                'https://images.unsplash.com/photo-1617098474202-0d0d7f60c56b?w=800&q=80',
+            ],
+            'kitchen': [
+                'https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&q=80',
+                'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80',
+                'https://images.unsplash.com/photo-1600566752734-2a0cd66c42f7?w=800&q=80',
+                'https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=800&q=80',
+                'https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=800&q=80',
+                'https://images.unsplash.com/photo-1574739782594-db4ead022697?w=800&q=80',
+                'https://images.unsplash.com/photo-1588854337236-6889d631faa8?w=800&q=80',
+                'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&q=80',
+                'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
+                'https://images.unsplash.com/photo-1596205836109-7b5a9d58cff1?w=800&q=80',
+                'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?w=800&q=80',
+                'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=800&q=80',
+                'https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=800&q=80',
+                'https://images.unsplash.com/photo-1613545325278-f24b0cae1224?w=800&q=80',
+                'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80',
+            ],
+        }
+
+        # Create property images with real URLs
+        print("Creating property image records with real image URLs...")
         properties = Property.query.all()
         img_count = 0
         for prop in properties:
@@ -279,17 +356,21 @@ def seed_database():
             num_imgs = random.randint(1, 4)
             img_types = ['main', 'living_room', 'bedroom', 'kitchen']
             for j in range(num_imgs):
+                img_type = img_types[j] if j < len(img_types) else 'general'
+                url_list = PROPERTY_IMAGE_URLS.get(img_type, PROPERTY_IMAGE_URLS['main'])
+                image_url = random.choice(url_list)
                 img = PropertyImage(
                     property_id=prop.id,
                     filename=f"property_{prop.id}_{j+1}.svg",
-                    image_type=img_types[j] if j < len(img_types) else 'general',
+                    image_url=image_url,
+                    image_type=img_type,
                     is_primary=(j == 0)
                 )
                 db.session.add(img)
                 img_count += 1
 
         db.session.commit()
-        print(f"Created {img_count} image records")
+        print(f"Created {img_count} image records with real URLs")
         print(f"\nSeed complete! Total: {len(STATES_CITIES)} states, {total_cities} cities, {property_count} properties")
         print(f"\nLogin credentials:")
         print(f"  Admin: admin@infy.com / admin123")

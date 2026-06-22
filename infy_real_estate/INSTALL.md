@@ -1,4 +1,4 @@
-# INFY Real Estate - Installation Guide
+# INFY Nest Real Estate - Installation Guide
 
 ## India's Smartest AI Powered Real Estate Platform
 

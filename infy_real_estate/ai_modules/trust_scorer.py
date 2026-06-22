@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Trust Score / Scam Detector
+INFY Nest Real Estate - AI Trust Score / Scam Detector
 Detects suspicious listings and generates trust scores
 """
 import random

@@ -1,5 +1,5 @@
 """
-INFY Real Estate - User Dashboard Routes
+INFY Nest Real Estate - User Dashboard Routes
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user

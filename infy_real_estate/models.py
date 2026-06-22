@@ -1,5 +1,5 @@
 """
-INFY Real Estate - Database Models
+INFY Nest Real Estate - Database Models
 """
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -125,6 +125,7 @@ class PropertyImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), nullable=False)
     filename = db.Column(db.String(256), nullable=False)
+    image_url = db.Column(db.String(512))  # External image URL (e.g. Unsplash)
     image_type = db.Column(db.String(50), default='general')  # main, living_room, bedroom, kitchen, general
     is_primary = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

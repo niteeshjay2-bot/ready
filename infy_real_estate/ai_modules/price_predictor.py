@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Property Price Prediction Engine
+INFY Nest Real Estate - AI Property Price Prediction Engine
 Uses Random Forest Regressor for price prediction
 """
 import random

@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Future Development & Growth Predictor
+INFY Nest Real Estate - AI Future Development & Growth Predictor
 Predicts future growth based on infrastructure development
 """
 import random

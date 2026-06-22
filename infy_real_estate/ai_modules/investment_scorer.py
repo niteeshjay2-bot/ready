@@ -1,5 +1,5 @@
 """
-INFY Real Estate - AI Investment Score Calculator
+INFY Nest Real Estate - AI Investment Score Calculator
 Generates investment score from 0-100 based on multiple factors
 """
 import random
